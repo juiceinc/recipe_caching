@@ -10,7 +10,7 @@ class CachingOven(OvenBase):
     """
     def init_engine(self, connection_string=None, **kwargs):
         return super(CachingOven, self).init_engine(connection_string,
-                                                     **kwargs)
+                                                    **kwargs)
 
     def init_session(self):
         """Establishes a Session constructor for async database communications

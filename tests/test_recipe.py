@@ -1,8 +1,8 @@
 from dogpile.cache.region import make_region
-from sqlalchemy import Column, Float, distinct, Integer, String, func
+from sqlalchemy import Column, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
-from recipe import Dimension, Metric, Shelf, WtdAvgMetric, Recipe, SETTINGS
+from recipe import Dimension, Metric, Shelf, Recipe, SETTINGS
 from recipe.oven import get_oven
 
 IN_MEMORY_CACHE = {}
@@ -47,17 +47,14 @@ mytable_shelf = Shelf({
 class TestRecipeIngredients(object):
     def setup(self):
         # create a Session
-        IN_MEMORY_CACHE = {}
         self.session = oven.Session()
         self.shelf = mytable_shelf
-
 
     def recipe(self, **kwargs):
         return Recipe(shelf=self.shelf, session=self.session,
                       dynamic_extensions=['caching'], **kwargs)
 
     def test_dimension(self):
-
         recipe = self.recipe().metrics('age').dimensions('first')
         assert recipe.to_sql() == """SELECT foo.first AS first,
        sum(foo.age) AS age
@@ -76,7 +73,6 @@ GROUP BY foo.first"""
         assert cached
         cache = ('hi', 15)
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
-
 
     def test_dimension2(self):
         recipe = self.recipe().metrics('age').dimensions('last').order_by(
