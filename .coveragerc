@@ -1,7 +1,7 @@
 [paths]
 source =
-   recipe
-   */site-packages/recipe
+   recipe_caching
+   */site-packages/recipe_caching
 
 [run]
 branch = true
