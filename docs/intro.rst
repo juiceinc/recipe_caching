@@ -3,15 +3,18 @@
 Introduction
 ============
 
-Recipe is a cross-database querying library, written in Python. It allows you to
-reuse SQL fragments that can be composed into queries. An extension classes
-allow you to support data anonymization, automatic generation of where clauses,
-subselects, and response formatting.
+Recipe_Caching is an extension to `recipe`_ the cross-database querying
+library. It allows you to cache SQL statements and their results in a wide
+array of caching backends. It uses `dogpile.cache`_ to store and manage
+the cache.
 
-Recipe License
---------------
+.. _`recipe`: http://github.com/juiceinc/recipe/
+.. _`dogpile.cache`: https://dogpilecache.readthedocs.io/en/latest/
 
-Recipe is released under terms of `The MIT License`_.
+Recipe_Caching License
+----------------------
+
+Recipe_Caching is released under terms of `The MIT License`_.
 
 ::
 
@@ -47,9 +50,9 @@ Pythons Supported
 At this time, the following Python platforms are officially supported:
 
 * cPython 2.7
-* cPython 3.5
+* cPython 3.6
 
 Support for other Pythons will be rolled out soon.
 
 
-Now, go :ref:`Installing Recipe <install>`.
+Now, go :ref:`Installing Recipe_Caching <install>`.

@@ -26,9 +26,9 @@ if sys.argv[-1] == 'test':
     sys.exit(bool(errors))
 
 install = [
-    'recipe_caching',
+    'recipe',
     'six',
-    'sqlalchemy',
+    'sqlalchemy==1.2.0b3',
     'redis',
     'dogpile.cache'
 ]
@@ -64,7 +64,7 @@ setup(
             'caching = recipe_caching.oven.drivers.caching_oven:CachingOven',
         ],
         'recipe.hooks.modify_query': [
-            'caching = recipe_caching.hooks.modify_query:CachingQuery',
+            'caching = recipe_caching.hooks.modify_query:CachingQueryHook',
         ],
     }
 )

@@ -5,245 +5,82 @@ Quickstart
 ==========
 
 
-.. module:: recipe
+.. module:: recipe_cachine
 
 
-This page gives a good introduction in how to get started with Recipe. This
-assumes you already have Recipe installed. If you do not, head over to
-:ref:`Installing Recipe <install>`.
-
-First, make sure that:
-
-* Recipe is :ref:`installed <install>`
-* Recipe is :ref:`up-to-date <updates>`
+This page gives a good introduction in how to get started with Recipe_Caching.
+This assumes you already have Recipe_Caching installed. If you do not, head
+over to :ref:`Installing Recipe_Caching <install>`.
 
 Let's gets started with some simple use cases and examples.
 
 
-------------------
-Creating a Shelf
-------------------
+---------------------------
+Setting up the Cache_Region
+---------------------------
 
 
-A :class:`Shelf <recipe.Shelf>` is a place to store SQL fragments. In recipe
-these are called :class:`Ingredients <recipe.Ingredient>`. Ingredients can
-contain columns that should be part of the ``SELECT`` portion of a query,
-filters that are part of the ``WHERE`` clause of a query, group_bys that
-contribute to a query's ``GROUP BY`` and havings which add ``HAVING`` limits
-ot a query.
+Cache regions are used by recipe_cache to specify where and how to key the
+query cache. Cache region are a concept define in `dogpile.cache`_, and you
+can learn more about them there. It needs to be setup in the recipe libraries
+SETTINGS object
 
-It's a safe bet that you won't have to construct an Ingredient
-with all these parts directly because Recipe contains convenience classes
-that help you build the most common SQL fragments. The two most common
-Ingredient subclasses are :class:`Dimensions <recipe.Dimension>` which supply
-both a column and a grouping on that column and
-:class:`Metrics <recipe.Metric>` which supply a column aggregation.
-
-Shelf acts like a dictionary. The keys are strings and the
-values are Ingredients. The keys are a shortcut name for the
-ingredient. Here's an example.
+.. _`dogpile.cache`: https://dogpilecache.readthedocs.io/en/latest/usage.html#region-configuration
 
 ::
 
-    from recipe import *
+    from recipe import SETTINGS
+    from recipe_caching.regions import build_region
 
-    shelf = Shelf({
-        'age': WtdAvgMetric(Census.age, Census.pop2000),
-        'population': Metric(func.sum(Census.pop2000)),
-        'state', Dimension(Census.state)
-    })
+    SETTINGS.CACHE_REGIONS = {
+        'default': build_region(region_type='redis', region_args={
+                'host': localhost,
+                'port': 6379,
+                'db': 0,
+                'redis_expiration_time': 60*60*2,   # 2 hours
+                'distributed_lock': True,
+                'lock_timeout': 120,
+                'lock_sleep': 5
+            }
+        )
+    }
 
-This is a shelf with two metrics (a weighted average of age, and the sum of
-population) and a dimension which lets you group on US State names.
 
+This is builds the required default cache region using the build_region
+shortcut provided by the recipe_caching lib; however, you can also use
+the make_region constructor from dogpile.cache.
 
----------------------------------
-Using the Shelf to build a Recipe
----------------------------------
+Next, we need to setup initialize our caching oven.
 
-Now that you have the shelf, you can build a recipe
+-----------------------------
+Initializing the Caching Oven
+-----------------------------
+A Caching Oven prepares the SQLAlchemy engine and session for use with
+a caching query. This is done by importing the ``get_oven()`` method,
+and setting the name to ``'caching'``, which activates the caching oven.
 
-Quick example of a recipe
+::
 
-Basic parts of a recipe
+    from recipe.oven import get_oven
 
-dimension, metrics, order_by, having
+    oven = get_oven('sqlite://', name='caching')
 
-Note that a recipe contains data from a single table.`
+Now we're ready to setup our Recipe.
 
+-------------------------------
+Setting up a Recipe for Caching
+-------------------------------
 
----------------------------------
-Viewing the data from your Recipe
----------------------------------
+Now that we have a region and an oven, we're now ready to use them to instruct
+the recipe to cache it's results or use the cached results if present. To do
+this, we set the Recipe's session to a new session build by the oven's
+``Session()`` method and add ``'caching'`` to the list of dyanmic_extensions
+passed to the Recipe.
 
-recipe.dataset.xxxx
-iterating over recipe.all
-dimensions have a separate _id property
+::
 
+    from recipe import Recipe
 
-======================
-More about Ingredients
-======================
+    recipe = Recipe(session=oven.Session(), dynamic_extensions=['caching'])
 
---------------------
-Types of Ingredients
---------------------
-
-List of ingredients
-
-Dimension
-~~~~~~~~~
-
-Dimensions are groupings that exist in your data.
-
-.. code-block:: python
-
-    # A simple dimension
-    self.shelf['state'] = Dimension(Census.state)
-
-IdValueDimension
-~~~~~~~~~~~~~~~~
-
-IdValueDimensions support separate properties for ids and values. Consider a
-table of employees with an ``employee_id`` and a ``full_name``. If you had
-two employees with the same name you need to be able to distinguish between
-them.
-
-.. code-block:: python
-
-    # Support an id and a label
-    self.shelf['employee']: IdValueDimension(Employee.id, Employee.full_name)
-
-The id is accessible as ``employee_id`` in each row and their full name is
-available as ``employee``.
-
-LookupDimension
-~~~~~~~~~~~~~~~
-
-Lookup dimension maps values in your data to descriptive names. The ``_id``
-property of your dimension contains the original value.
-
-.. code-block:: python
-
-    # Convert M/F into Male/Female
-    self.shelf['gender']: LookupDimension(Census.sex, {'M': 'Male',
-        'F': 'Female'}, default='Unknown')
-
-If you use the gender dimension, there will be a ``gender_id`` in each row
-that will be "M" or "F" and a ``gender`` in each row that will be "Male" or
-"Female".
-
-Metric
-~~~~~~
-
-DivideMetric
-~~~~~~~~~~~~
-
-WtdAvgMetric
-~~~~~~~~~~~~
-
-SumIfMetric
-~~~~~~~~~~~
-
-CountIfMetric
-~~~~~~~~~~~~~
-
-Filter
-~~~~~~
-
-Having
-~~~~~~
-
-
-----------
-Formatters
-----------
-
-----------------
-Building filters
-----------------
-
-Ingredient.build_filter
-
-
---------------------------------
-Storing extra attributes in meta
---------------------------------
-
-
-
-================
-Using Extensions
-================
-
-
-This part of the documentation services to give you an idea that are otherwise hard to extract from the :ref:`API Documentation <api>`
-
-And now for something completely different.
-
-
-.. _dyncols:
-
-What are extensions for?
-
--------------------
-Automatic Filtering
--------------------
-
-AutomaticFilter
-
----------------------------
-Summarizing over Dimensions
----------------------------
-
-SummarizeOverRecipe
-
------------------------
-Merging multiple tables
------------------------
-
-BlendRecipe
-
-
-----------------------
-Adding comparison data
-----------------------
-
-CompareRecipe
-
-
-
-----------------
-Anonymizing data
-----------------
-
-Anonymize
-
-
-
-
-=================
-Advanced Features
-=================
-
---------------------
-Database connections
---------------------
-
-
--------
-Caching
--------
-
--------------------------------------------
-Running recipes in parallel with RecipePool
--------------------------------------------
-
-
-
-
-
-----
-
-Now, go check out the :ref:`API Documentation <api>` or begin
-:ref:`Recipe Development <development>`.
+Now we continue to use the recipe as we would normally.

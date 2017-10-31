@@ -4,9 +4,9 @@ Installation
 
 
 .. _installing:
------------------
-Installing Recipe
------------------
+-------------------------
+Installing Recipe_Caching
+-------------------------
 
 Distribute & Pip
 ----------------
@@ -14,7 +14,7 @@ Distribute & Pip
 The recommended way to install Recipe is with `pip
 <http://www.pip-installer.org/>`_::
 
-    $ pip install recipe
+    $ pip install recipe_caching
 
 
 -------------------
@@ -37,8 +37,8 @@ install it into your site-packages easily.
     $ python setup.py install
 
 
-.. _tarball: http://github.com/juiceinc/recipe/tarball/master
-.. _zipball: http://github.com/juiceinc/recipe/zipball/master
+.. _tarball: http://github.com/juiceinc/recipe_caching/tarball/master
+.. _zipball: http://github.com/juiceinc/recipe_caching/zipball/master
 
 
 
@@ -48,12 +48,12 @@ Staying Updated
 
 The latest version of Recipe will always be available here:
 
-* PyPi: http://pypi.python.org/pypi/recipe/
-* GitHub: http://github.com/juiceinc/recipe/
+* PyPi: http://pypi.python.org/pypi/recipe_caching/
+* GitHub: http://github.com/juiceinc/recipe_caching/
 
 When a new version is available, upgrading is simple::
 
-    $ pip install recipe --upgrade
+    $ pip install recipe_caching --upgrade
 
 
 Now, go get a :ref:`Quick Start <quickstart>`.

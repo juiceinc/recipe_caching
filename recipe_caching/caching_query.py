@@ -1,23 +1,12 @@
 """caching_query.py
 
-Represent functions and classes
-which allow the usage of Dogpile caching with SQLAlchemy.
-Introduces a query option called FromCache.
-
-The three new concepts introduced here are:
+Represent functions and classes which allow the usage of
+Dogpile caching with SQLAlchemy.
 
  * CachingQuery - a Query subclass that caches and
    retrieves results in/from dogpile.cache.
- * FromCache - a query option that establishes caching
-   parameters on a Query
- * RelationshipCache - a variant of FromCache which is specific
-   to a query invoked during a lazy load.
- * _params_from_query - extracts value parameters from
-   a Query.
 
-The rest of what's here are standard SQLAlchemy and
-dogpile.cache constructs.
-
+The rest of what's here are standard SQLAlchemy and dogpile.cache constructs.
 """
 import logging
 

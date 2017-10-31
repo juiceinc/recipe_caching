@@ -1,3 +1,15 @@
+""" mappers.py
+Introduces a query option called FromCache.
+
+The three new concepts introduced here are:
+
+ * FromCache - a query option that establishes caching
+   parameters on a Query
+ * RelationshipCache - a variant of FromCache which is specific
+   to a query invoked during a lazy load.
+ * _params_from_query - extracts value parameters from
+   a Query.
+"""
 from sqlalchemy.orm.interfaces import MapperOption
 
 

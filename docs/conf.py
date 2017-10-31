@@ -22,7 +22,7 @@ if os.getenv('SPELLCHECK'):
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'Recipe'
+project = u'Recipe_Caching'
 year = '2017'
 author = u'Chris Gemignani'
 copyright = '{0}, {1}'.format(year, author)

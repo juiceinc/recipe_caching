@@ -5,68 +5,63 @@ API
 ===
 
 
-.. module:: recipe
 
-This part of the documentation covers all the interfaces of Recipe.
-
-
---------------
-Recipe Object
---------------
+This part of the documentation covers all the interfaces of Recipe_Caching.
 
 
-.. autoclass:: Recipe
+-------------------
+Caching Oven Object
+-------------------
+
+
+.. module:: recipe_caching.oven.drivers.caching_oven
+.. autoclass:: CachingOven
    :inherited-members:
 
 
-------------
-Shelf Object
-------------
+-----------------------
+CachingQueryHook Object
+-----------------------
 
 
-.. autoclass:: Shelf
+.. module:: recipe_caching.hooks.modify_query
+.. autoclass:: CachingQueryHook
    :inherited-members:
 
-.. autoclass:: AutomaticShelf
+Supporting Objects
+
+------------------------------------
+CachingQuery Object (Query subclass)
+------------------------------------
+
+
+.. module:: recipe_caching.caching_query
+.. autoclass:: CachingQuery
+
+-------
+Mappers
+-------
+
+
+
+.. module:: recipe_caching.mappers
+.. autoclass:: FromCache
    :inherited-members:
 
-
------------
-Ingredients
------------
-
-
-.. autoclass:: Ingredient
+.. autoclass:: RelationshipCache
    :inherited-members:
 
-.. autoclass:: Dimension
-   :inherited-members:
+-------
+Regions
+-------
 
-.. autoclass:: Metric
-   :inherited-members:
+.. module:: recipe_caching.regions
+.. autofunction:: build_region
 
+.. autofunction:: mangle_key
 
+.. autofunction:: unicode_sha1_mangle_key
 
----------
-Functions
----------
+.. autofunction:: async_creation_runner
 
-
-
-
-----------
-Exceptions
-----------
-
-
-.. class:: BadIngredient
-
-    You can't build an ingredient this way.
-
-
-.. class:: BadRecipe
-
-    You can't build a recipe this way.
-
-
-Now, go start some :ref:`Recipe Development <development>`.
+.. autofunction:: clean_unicode

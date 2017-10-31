@@ -7,42 +7,6 @@ Overview
 .. list-table::
     :stub-columns: 1
 
-    * - docs
-      - |docs|
-    * - tests
-      - | |travis| |appveyor| |requires|
-        | |codecov|
-    * - package
-      - | |version| |downloads| |wheel| |supported-versions| |supported-implementations|
-        | |commits-since|
-
-.. |docs| image:: https://readthedocs.org/projects/recipe/badge/?style=flat
-    :target: https://readthedocs.org/projects/recipe
-    :alt: Documentation Status
-
-.. |travis| image:: https://travis-ci.org/chrisgemignani/recipe.svg?branch=master
-    :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/chrisgemignani/recipe
-
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/chrisgemignani/recipe?branch=master&svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/chrisgemignani/recipe
-
-.. |requires| image:: https://requires.io/github/chrisgemignani/recipe/requirements.svg?branch=master
-    :alt: Requirements Status
-    :target: https://requires.io/github/chrisgemignani/recipe/requirements/?branch=master
-
-.. |codecov| image:: https://codecov.io/github/chrisgemignani/recipe/coverage.svg?branch=master
-    :alt: Coverage Status
-    :target: https://codecov.io/github/chrisgemignani/recipe
-
-.. |version| image:: https://img.shields.io/pypi/v/recipe.svg
-    :alt: PyPI Package latest release
-    :target: https://pypi.python.org/pypi/recipe
-
-.. |commits-since| image:: https://img.shields.io/github/commits-since/chrisgemignani/recipe/v0.1.0.svg
-    :alt: Commits since latest release
-    :target: https://github.com/chrisgemignani/recipe/compare/v0.1.0...master
 
 .. |downloads| image:: https://img.shields.io/pypi/dm/recipe.svg
     :alt: PyPI Package monthly downloads
@@ -63,42 +27,27 @@ Overview
 
 .. end-badges
 
-Legos for SQL
-
-* Free software: BSD license
+Recipe_Caching is an MIT licensed caching extension for the recipe querying
+library, written in Python. It caches SQL query results keyed by the SQL query.
+By providing a custom oven and a recipe extension. Using it requires defining
+a `dogpile.cache`_ cache region, using the caching oven, and telling the recipe
+to use the caching extension.
 
 Installation
 ============
 
 ::
 
-    pip install recipe
+    pip install recipe_caching
 
 Documentation
 =============
 
-https://recipe.readthedocs.io/
+https://recipe_caching.readthedocs.io/
 
 Development
 ===========
 
 To run the all tests run::
 
-    tox
-
-Note, to combine the coverage data from all the tox environments run:
-
-.. list-table::
-    :widths: 10 90
-    :stub-columns: 1
-
-    - - Windows
-      - ::
-
-            set PYTEST_ADDOPTS=--cov-append
-            tox
-
-    - - Other
-      - ::
-
-            PYTEST_ADDOPTS=--cov-append tox
+    py.test
