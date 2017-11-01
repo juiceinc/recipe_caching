@@ -15,4 +15,4 @@ precommit:
 	pre-commit run --all-files
 
 flake8:
-	flake8 src/recipe --exit-zero --max-complexity 12 --exclude=__init__.py
+	flake8 . --exit-zero --max-complexity 12 --exclude=__init__.py
