@@ -32,6 +32,7 @@ flake8 --output-file=flake8_errors.txt --exit-zero .'''
 #!/usr/bin/bash
 VENV=".venv"
 . "$VENV/bin/activate"
+pip install -e .
 py.test --cov-config .coveragerc --cov recipe_caching --cov-report term-missing --cov-report xml --junitxml junit.xml
 '''
         }
