@@ -5,7 +5,7 @@ Quickstart
 ==========
 
 
-.. module:: recipe_cachine
+.. module:: recipe_caching
 
 
 This page gives a good introduction in how to get started with Recipe_Caching.
