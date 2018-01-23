@@ -69,12 +69,17 @@ def mangle_key(key):
 
     :return: a prefixed and mangled key
     """
-    prefix, key = key.split(':', 1)
     base = 'recipe_cache:'
+    try:
+        prefix, key = key.split(':', 1)
+    except ValueError:
+        prefix = None
+
     if prefix:
         base += '{}'.format(prefix)
     else:
         raise ValueError(key)
+
     return '{}:{}'.format(base, unicode_sha1_mangle_key(key))
 
 
