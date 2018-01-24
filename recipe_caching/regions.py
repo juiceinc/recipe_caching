@@ -72,13 +72,9 @@ def mangle_key(key):
     base = 'recipe_cache:'
     try:
         prefix, key = key.split(':', 1)
-    except ValueError:
-        prefix = None
-
-    if prefix:
         base += '{}'.format(prefix)
-    else:
-        raise ValueError(key)
+    except ValueError:
+        pass
 
     return '{}:{}'.format(base, unicode_sha1_mangle_key(key))
 
