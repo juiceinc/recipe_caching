@@ -9,7 +9,7 @@ PyYAML==3.12
 recipe==0.1.0
 redis==2.10.6
 six==1.11.0
-SQLAlchemy==1.2.0b2
+SQLAlchemy==1.2.2
 sqlparse==0.2.4
 tablib==0.12.1
 unicodecsv==0.14.1
