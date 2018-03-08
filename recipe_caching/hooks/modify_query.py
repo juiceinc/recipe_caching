@@ -1,12 +1,14 @@
+from recipe_caching.mappers import FromCache
+
 from recipe import SETTINGS
 from recipe.dynamic_extensions import DynamicExtensionBase
-from recipe_caching.mappers import FromCache
 
 
 class CachingQueryHook(DynamicExtensionBase):
     """A stevedore based DynamicExtension that sets the proper options for a
     cached query
     """
+
     def __init__(self, recipe_parts):
         """Initializes a new CachingQueryHook
         :param recipe_parts: the components of a recipe

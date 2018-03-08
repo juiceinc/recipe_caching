@@ -25,6 +25,7 @@ if sys.argv[-1] == 'test':
     errors = os.system('py.test test_tablib.py')
     sys.exit(bool(errors))
 
+# yapf: disable
 install = [
     'recipe',
     'six',
@@ -32,6 +33,7 @@ install = [
     'redis',
     'dogpile.cache'
 ]
+# yapf: enable
 
 setup(
     name='recipe_caching',
@@ -66,5 +68,4 @@ setup(
         'recipe.hooks.modify_query': [
             'caching = recipe_caching.hooks.modify_query:CachingQueryHook',
         ],
-    }
-)
+    })

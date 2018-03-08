@@ -1,13 +1,14 @@
+from recipe_caching import query_callable
 from sqlalchemy.orm import sessionmaker
 
 from recipe import SETTINGS
 from recipe.oven.base import OvenBase
-from recipe_caching import query_callable
 
 
 class CachingOven(OvenBase):
     """An Oven for baking recipes with a cache backed query Session.
     """
+
     def init_engine(self, connection_string=None, **kwargs):
         """ Builds a SQLAlchemy engine appropiate for use in caching
 
@@ -34,6 +35,7 @@ class CachingOven(OvenBase):
         SETTINGS.REGIONS = {}
 
         return sessionmaker(
-            bind=self.engine, autoflush=False, autocommit=False,
-            query_cls=query_callable(SETTINGS.CACHE_REGIONS)
-        )
+            bind=self.engine,
+            autoflush=False,
+            autocommit=False,
+            query_cls=query_callable(SETTINGS.CACHE_REGIONS))

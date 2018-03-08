@@ -1,16 +1,24 @@
 from dogpile.cache.region import make_region
-from sqlalchemy import Column, Integer, String, func
+from sqlalchemy import Column
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 
-from recipe import Dimension, Metric, Shelf, Recipe, SETTINGS
+from recipe import SETTINGS
+from recipe import Dimension
+from recipe import Metric
+from recipe import Recipe
+from recipe import Shelf
 from recipe.oven import get_oven
 
 IN_MEMORY_CACHE = {}
 SETTINGS.CACHE_REGIONS = {
-    'default': make_region().configure(
-        'dogpile.cache.memory',
-        arguments={'cache_dict': IN_MEMORY_CACHE}
-    )
+    'default':
+    make_region().configure(
+        'dogpile.cache.memory', arguments={
+            'cache_dict': IN_MEMORY_CACHE
+        })
 }
 
 Base = declarative_base()
@@ -51,8 +59,11 @@ class TestRecipeIngredients(object):
         self.shelf = mytable_shelf
 
     def recipe(self, **kwargs):
-        return Recipe(shelf=self.shelf, session=self.session,
-                      dynamic_extensions=['caching'], **kwargs)
+        return Recipe(
+            shelf=self.shelf,
+            session=self.session,
+            dynamic_extensions=['caching'],
+            **kwargs)
 
     def test_dimension(self):
         recipe = self.recipe().metrics('age').dimensions('first')
@@ -98,8 +109,8 @@ ORDER BY foo.last"""
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
     def test_recipe_init(self):
-        recipe = self.recipe(metrics=('age',), dimensions=('last',)).order_by(
-            'last')
+        recipe = self.recipe(
+            metrics=('age', ), dimensions=('last', )).order_by('last')
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
