@@ -76,8 +76,7 @@ class RelationshipCache(MapperOption):
 
             for cls in mapper.class_.__mro__:
                 if (cls, key) in self._relationship_options:
-                    relationship_option = self._relationship_options[(cls,
-                                                                      key)]
+                    relationship_option = self._relationship_options[(cls, key)]
                     query._cache_region = relationship_option
                     break
 

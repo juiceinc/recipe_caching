@@ -20,8 +20,7 @@ class CachingOven(OvenBase):
 
         :return: a SQLAlchemy engine
         """
-        return super(CachingOven, self).init_engine(connection_string,
-                                                    **kwargs)
+        return super(CachingOven, self).init_engine(connection_string, **kwargs)
 
     def init_session(self):
         """Establishes a Sessionmaker thab supplies sessions with caching
@@ -38,4 +37,5 @@ class CachingOven(OvenBase):
             bind=self.engine,
             autoflush=False,
             autocommit=False,
-            query_cls=query_callable(SETTINGS.CACHE_REGIONS))
+            query_cls=query_callable(SETTINGS.CACHE_REGIONS)
+        )

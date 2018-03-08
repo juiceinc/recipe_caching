@@ -12,6 +12,7 @@ try:  # Python 2.7+
 except ImportError:
 
     class NullHandler(logging.Handler):
+
         def emit(self, record):
             pass
 
@@ -20,6 +21,7 @@ logging.getLogger(__name__).addHandler(NullHandler())
 
 
 def query_callable(regions, query_cls=CachingQuery):
+
     def query(*arg, **kw):
         return query_cls(regions, *arg, **kw)
 

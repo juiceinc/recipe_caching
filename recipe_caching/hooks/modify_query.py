@@ -25,5 +25,6 @@ class CachingQueryHook(DynamicExtensionBase):
         cache_target = getattr(SETTINGS, 'CACHE_REGION', 'default')
         cache_prefix = getattr(SETTINGS, 'CACHE_PREFIX', None)
         self.recipe_parts['query'] = self.recipe_parts['query'].options(
-            FromCache(cache_target, cache_prefix=cache_prefix))
+            FromCache(cache_target, cache_prefix=cache_prefix)
+        )
         return self.recipe_parts

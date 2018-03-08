@@ -68,4 +68,5 @@ setup(
         'recipe.hooks.modify_query': [
             'caching = recipe_caching.hooks.modify_query:CachingQueryHook',
         ],
-    })
+    }
+)

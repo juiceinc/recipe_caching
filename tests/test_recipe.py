@@ -15,10 +15,11 @@ from recipe.oven import get_oven
 IN_MEMORY_CACHE = {}
 SETTINGS.CACHE_REGIONS = {
     'default':
-    make_region().configure(
-        'dogpile.cache.memory', arguments={
-            'cache_dict': IN_MEMORY_CACHE
-        })
+        make_region().configure(
+            'dogpile.cache.memory', arguments={
+                'cache_dict': IN_MEMORY_CACHE
+            }
+        )
 }
 
 Base = declarative_base()
@@ -33,7 +34,8 @@ TABLEDEF = '''
 
 oven.engine.execute(TABLEDEF)
 oven.engine.execute(
-    "insert into foo values ('hi', 'there', 5), ('hi', 'fred', 10)")
+    "insert into foo values ('hi', 'there', 5), ('hi', 'fred', 10)"
+)
 
 
 class MyTable(Base):
@@ -53,6 +55,7 @@ mytable_shelf = Shelf({
 
 
 class TestRecipeIngredients(object):
+
     def setup(self):
         # create a Session
         self.session = oven.Session()
@@ -63,7 +66,8 @@ class TestRecipeIngredients(object):
             shelf=self.shelf,
             session=self.session,
             dynamic_extensions=['caching'],
-            **kwargs)
+            **kwargs
+        )
 
     def test_dimension(self):
         recipe = self.recipe().metrics('age').dimensions('first')
@@ -86,8 +90,8 @@ GROUP BY foo.first"""
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
     def test_dimension2(self):
-        recipe = self.recipe().metrics('age').dimensions('last').order_by(
-            'last')
+        recipe = self.recipe().metrics('age').dimensions('last'
+                                                        ).order_by('last')
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
@@ -110,7 +114,8 @@ ORDER BY foo.last"""
 
     def test_recipe_init(self):
         recipe = self.recipe(
-            metrics=('age', ), dimensions=('last', )).order_by('last')
+            metrics=('age',), dimensions=('last',)
+        ).order_by('last')
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
