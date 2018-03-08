@@ -28,7 +28,7 @@ if sys.argv[-1] == 'test':
 install = [
     'recipe',
     'six',
-    'sqlalchemy==1.2.0b3',
+    'sqlalchemy>=1.2.2',
     'redis',
     'dogpile.cache'
 ]

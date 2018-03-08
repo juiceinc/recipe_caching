@@ -91,8 +91,6 @@ def build_region(region_type='redis', region_args={}):
     :return: a cache region object, typically to be stored in recipe settings.
     """
     return make_region(async_creation_runner=async_creation_runner,
-                key_mangler=mangle_key).configure(
-        'dogpile.cache.' + region_type,
-        arguments=region_args
-
-    )
+                       key_mangler=mangle_key).configure(
+                            'dogpile.cache.' + region_type,
+                            arguments=region_args)
