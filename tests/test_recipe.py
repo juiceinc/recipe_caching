@@ -1,15 +1,8 @@
 from dogpile.cache.region import make_region
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import func
+from sqlalchemy import Column, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
-from recipe import SETTINGS
-from recipe import Dimension
-from recipe import Metric
-from recipe import Recipe
-from recipe import Shelf
+from recipe import SETTINGS, Dimension, Metric, Recipe, Shelf
 from recipe.oven import get_oven
 
 IN_MEMORY_CACHE = {}

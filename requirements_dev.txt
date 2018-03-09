@@ -4,3 +4,4 @@ pytest-cov
 sphinx
 bumpversion
 pre-commit
+twine
