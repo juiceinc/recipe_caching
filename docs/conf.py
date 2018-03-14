@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import os
 
-
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -26,7 +25,7 @@ project = u'Recipe_Caching'
 year = '2017'
 author = u'Chris Gemignani'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'0.2.2'
+version = release = u'0.3.0'
 
 pygments_style = 'trac'
 templates_path = ['.']

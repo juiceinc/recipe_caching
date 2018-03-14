@@ -25,6 +25,7 @@ if sys.argv[-1] == 'test':
     errors = os.system('py.test test_tablib.py')
     sys.exit(bool(errors))
 
+# yapf: disable
 install = [
     'recipe',
     'six',
@@ -32,10 +33,11 @@ install = [
     'redis',
     'dogpile.cache'
 ]
+# yapf: enable
 
 setup(
     name='recipe_caching',
-    version='0.2.2',
+    version='0.3.0',
     description='caching for recipes',
     long_description=(open('README.rst').read()),
     author='Chris Gemignani',

@@ -18,7 +18,7 @@ class FromCache(MapperOption):
 
     propagate_to_loaders = False
 
-    def __init__(self, region="default", cache_key=None, cache_prefix=None):
+    def __init__(self, region='default', cache_key=None, cache_prefix=None):
         """Construct a new FromCache.
         :param region: the cache region.  Should be a
         region configured in the dictionary of dogpile
@@ -43,7 +43,7 @@ class RelationshipCache(MapperOption):
        should load results from a cache."""
     propagate_to_loaders = True
 
-    def __init__(self, attribute, region="default", cache_key=None):
+    def __init__(self, attribute, region='default', cache_key=None):
         """Construct a new RelationshipCache.
 
         :param attribute: A Class.attribute which
@@ -76,8 +76,7 @@ class RelationshipCache(MapperOption):
 
             for cls in mapper.class_.__mro__:
                 if (cls, key) in self._relationship_options:
-                    relationship_option = self._relationship_options[
-                        (cls, key)]
+                    relationship_option = self._relationship_options[(cls, key)]
                     query._cache_region = relationship_option
                     break
 

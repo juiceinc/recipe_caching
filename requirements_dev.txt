@@ -3,3 +3,5 @@ flake8
 pytest-cov
 sphinx
 bumpversion
+pre-commit
+twine

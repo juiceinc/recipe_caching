@@ -58,8 +58,7 @@ class CachingQuery(Query):
 
         """
         if hasattr(self, '_cache_region'):
-            return self.get_value(
-                createfunc=lambda: list(Query.__iter__(self)))
+            return self.get_value(createfunc=lambda: list(Query.__iter__(self)))
         else:
             return Query.__iter__(self)
 
@@ -79,8 +78,13 @@ class CachingQuery(Query):
         dogpile_region, cache_key = self._get_cache_plus_key()
         dogpile_region.delete(cache_key)
 
-    def get_value(self, merge=True, createfunc=None,
-                  expiration_time=None, ignore_expiration=False):
+    def get_value(
+        self,
+        merge=True,
+        createfunc=None,
+        expiration_time=None,
+        ignore_expiration=False
+    ):
         """Return the value from the cache for this query.
 
         Raise KeyError if no value present and no
@@ -105,9 +109,7 @@ class CachingQuery(Query):
         else:
             try:
                 cached_value = dogpile_region.get_or_create(
-                    cache_key,
-                    createfunc,
-                    expiration_time=expiration_time
+                    cache_key, createfunc, expiration_time=expiration_time
                 )
             except ConnectionError:
                 logger.error('Cannot connect to query caching backend!')
@@ -145,5 +147,5 @@ def _key_from_query(query, qualifier=None):
 
     # here we return the key as a long string.  our "key mangler"
     # set up with the region will boil it down to an md5.
-    return " ".join([clean_unicode(compiled)] +
+    return ' '.join([clean_unicode(compiled)] +
                     [clean_unicode(params[k]) for k in sorted(params)])

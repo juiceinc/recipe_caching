@@ -20,6 +20,7 @@ def async_creation_runner(cache, somekey, creator, mutex):
 
     :return: Nothing
     """
+
     def runner():
         try:
             value = creator()
@@ -42,10 +43,10 @@ def clean_unicode(value):
     try:
         cleaned_value = str(value)
     except UnicodeEncodeError:
-        cleaned_value = unicodedata.normalize('NFKD', value).encode(
-            'ascii', 'ignore')
+        cleaned_value = unicodedata.normalize('NFKD',
+                                              value).encode('ascii', 'ignore')
         if not cleaned_value:
-            raise ValueError("Could not find useful chars in the string")
+            raise ValueError('Could not find useful chars in the string')
     return cleaned_value
 
 
@@ -90,7 +91,8 @@ def build_region(region_type='redis', region_args={}):
 
     :return: a cache region object, typically to be stored in recipe settings.
     """
-    return make_region(async_creation_runner=async_creation_runner,
-                       key_mangler=mangle_key).configure(
-                            'dogpile.cache.' + region_type,
-                            arguments=region_args)
+    return make_region(
+        async_creation_runner=async_creation_runner, key_mangler=mangle_key
+    ).configure(
+        'dogpile.cache.' + region_type, arguments=region_args
+    )
