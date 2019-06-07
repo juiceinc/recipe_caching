@@ -22,7 +22,9 @@ class CachingQueryHook(DynamicExtensionBase):
         :return: all the recipe components in recipe_parts format
         :rtype: dict
         """
-        cache_target = getattr(SETTINGS, 'CACHE_REGION', 'default')
+        cache_target = getattr(
+            self, '_cache_region', getattr(SETTINGS, 'CACHE_REGION', 'default')
+        )
         cache_prefix = getattr(SETTINGS, 'CACHE_PREFIX', None)
         self.recipe_parts['query'] = self.recipe_parts['query'].options(
             FromCache(cache_target, cache_prefix=cache_prefix)

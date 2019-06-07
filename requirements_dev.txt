@@ -5,3 +5,4 @@ sphinx
 bumpversion
 pre-commit
 twine
+pip-tools

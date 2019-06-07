@@ -1,0 +1,7 @@
+dogpile.cache
+six
+recipe
+sqlalchemy
+redis
+dogpile.cache
+flapjack-stack
