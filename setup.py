@@ -27,7 +27,7 @@ if sys.argv[-1] == 'test':
 
 # yapf: disable
 install = [
-    'recipe',
+    'recipe>=0.7.2',
     'six',
     'sqlalchemy',
     'redis',

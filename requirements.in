@@ -1,6 +1,6 @@
 dogpile.cache
 six
-recipe
+recipe>=0.7.2
 sqlalchemy
 redis
 dogpile.cache

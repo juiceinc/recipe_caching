@@ -6,6 +6,7 @@ Changelog
 0.4.0 (2019-06)
 -----------------------------------------
 
+* Update dogpile.cache version to 0.7.1
 * Allow recipe core to specify an optional cache_region
 * Use pip-compile
 
