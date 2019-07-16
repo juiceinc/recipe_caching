@@ -58,7 +58,9 @@ class CachingQuery(Query):
 
         """
         if hasattr(self, '_cache_region'):
-            return self.get_value(createfunc=lambda: list(Query.__iter__(self)))
+            return self.get_value(
+                createfunc=lambda: list(Query.__iter__(self))
+            )
         else:
             return Query.__iter__(self)
 

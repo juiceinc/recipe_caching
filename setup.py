@@ -22,22 +22,23 @@ if sys.argv[-1] == 'test':
         print('py.test required.')
         sys.exit(1)
 
-    errors = os.system('py.test test_tablib.py')
+    errors = os.system('py.test')
     sys.exit(bool(errors))
 
 # yapf: disable
 install = [
-    'recipe',
+    'recipe>=0.7.2',
     'six',
-    'sqlalchemy>=1.2.2',
+    'sqlalchemy',
     'redis',
-    'dogpile.cache'
+    'dogpile.cache',
+    'flapjack-stack'
 ]
 # yapf: enable
 
 setup(
     name='recipe_caching',
-    version='0.3.1',
+    version='0.4.0',
     description='caching for recipes',
     long_description=(open('README.rst').read()),
     author='Chris Gemignani',

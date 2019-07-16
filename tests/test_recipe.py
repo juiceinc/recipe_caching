@@ -83,8 +83,8 @@ GROUP BY foo.first"""
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
     def test_dimension2(self):
-        recipe = self.recipe().metrics('age').dimensions('last'
-                                                        ).order_by('last')
+        recipe = self.recipe().metrics('age').dimensions('last')\
+            .order_by('last')
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
@@ -126,5 +126,4 @@ ORDER BY foo.last"""
                 cached_key = key
         assert cached
         cache = ('fred', 10)
-        print(IN_MEMORY_CACHE[cached_key][0][0])
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
