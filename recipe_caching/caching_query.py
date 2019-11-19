@@ -14,7 +14,6 @@ from dogpile.cache.api import NO_VALUE
 from redis.exceptions import ConnectionError, LockError as RedisLockError
 from dogpile.util.readwrite_lock import LockError as DogpileLockError
 from sqlalchemy.orm.query import Query
-from six import text_type
 
 from recipe.utils import clean_unicode
 
