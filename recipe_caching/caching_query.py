@@ -158,5 +158,5 @@ def _key_from_query(query, qualifier=None):
 
     # here we return the key as a long string.  our "key mangler"
     # set up with the region will boil it down to an md5.
-    return ' '.join([clean_unicode(text_type(compiled)).decode('utf-8')] +
+    return ' '.join([clean_unicode(compiled).decode('utf-8')] +
                     [clean_unicode(params[k]).decode('utf-8') for k in sorted(params)])
