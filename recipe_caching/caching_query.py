@@ -42,7 +42,7 @@ class CachingQuery(Query):
 
     def __init__(self, regions, *args, **kw):
         self.cache_regions = regions
-        self.saved_to_cache = False
+        self.fetched_from_cache = False
         Query.__init__(self, *args, **kw)
 
     def __iter__(self):
@@ -57,7 +57,6 @@ class CachingQuery(Query):
            modified to first expunge() each loaded item from the current
            session before returning the list of items, so that the items
            in the cache are not the same ones in the current Session.
-
         """
         if hasattr(self, '_cache_region'):
             return self.get_value(
@@ -68,7 +67,6 @@ class CachingQuery(Query):
 
     def _get_cache_plus_key(self):
         """Return a cache region plus key."""
-
         dogpile_region = self.cache_regions[self._cache_region.region]
         if self._cache_region.cache_key:
             key = self._cache_region.cache_key
@@ -80,7 +78,6 @@ class CachingQuery(Query):
 
     def invalidate(self):
         """Invalidate the cache value represented by this Query."""
-
         dogpile_region, cache_key = self._get_cache_plus_key()
         dogpile_region.delete(cache_key)
 
@@ -95,7 +92,6 @@ class CachingQuery(Query):
 
         Raise KeyError if no value present and no
         createfunc specified.
-
         """
         dogpile_region, cache_key = self._get_cache_plus_key()
 
@@ -106,6 +102,7 @@ class CachingQuery(Query):
         assert not ignore_expiration or not createfunc, \
             "Can't ignore expiration and also provide createfunc"
 
+        ran_createfunc = []
         if ignore_expiration or not createfunc:
             cached_value = dogpile_region.get(
                 cache_key,
@@ -113,20 +110,26 @@ class CachingQuery(Query):
                 ignore_expiration=ignore_expiration
             )
         else:
+            def create_wrapper():
+                # When we switch all the way to Python 3, this should use `nonlocal`
+                ran_createfunc.append(True)
+                return createfunc()
+
             try:
                 cached_value = dogpile_region.get_or_create(
-                    cache_key, createfunc, expiration_time=expiration_time
+                    cache_key, create_wrapper, expiration_time=expiration_time
                 )
             except ConnectionError:
                 logger.error('Cannot connect to query caching backend!')
-                cached_value = createfunc()
+                cached_value = create_wrapper()
             except (RedisLockError, DogpileLockError) as exc_info:
                 logger.warn('Lock is not longer available: {}'.format(exc_info))
-                cached_value = createfunc()
+                cached_value = create_wrapper()
         if cached_value is NO_VALUE:
             raise KeyError(cache_key)
         if merge:
             cached_value = self.merge_result(cached_value, load=False)
+        self.fetched_from_cache = not ran_createfunc
         return cached_value
 
     def set_value(self, value):
@@ -134,7 +137,6 @@ class CachingQuery(Query):
         dogpile_region, cache_key = self._get_cache_plus_key()
         try:
             dogpile_region.set(cache_key, value)
-            self.saved_to_cache = True
         except ConnectionError:
             logger.error('Cannot connect to query caching backend!')
 
