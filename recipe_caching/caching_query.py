@@ -11,8 +11,10 @@ The rest of what's here are standard SQLAlchemy and dogpile.cache constructs.
 import logging
 
 from dogpile.cache.api import NO_VALUE
-from redis import ConnectionError
+from redis.exceptions import ConnectionError, LockError as RedisLockError
+from dogpile.util.readwrite_lock import LockError as DogpileLockError
 from sqlalchemy.orm.query import Query
+from six import text_type
 
 from recipe.utils import clean_unicode
 
@@ -72,6 +74,8 @@ class CachingQuery(Query):
             key = self._cache_region.cache_key
         else:
             key = _key_from_query(self)
+        if getattr(self._cache_region, 'cache_prefix'):
+            key = '{}:{}'.format(self._cache_region.cache_prefix, key)
         return dogpile_region, key
 
     def invalidate(self):
@@ -116,6 +120,9 @@ class CachingQuery(Query):
             except ConnectionError:
                 logger.error('Cannot connect to query caching backend!')
                 cached_value = createfunc()
+            except (RedisLockError, DogpileLockError) as exc_info:
+                logger.warn('Lock is not longer available: {}'.format(exc_info))
+                cached_value = createfunc()
         if cached_value is NO_VALUE:
             raise KeyError(cache_key)
         if merge:
@@ -149,5 +156,5 @@ def _key_from_query(query, qualifier=None):
 
     # here we return the key as a long string.  our "key mangler"
     # set up with the region will boil it down to an md5.
-    return ' '.join([clean_unicode(compiled)] +
-                    [clean_unicode(params[k]) for k in sorted(params)])
+    return ' '.join([clean_unicode(text_type(compiled)).decode('utf-8')] +
+                    [clean_unicode(params[k]).decode('utf-8') for k in sorted(params)])
