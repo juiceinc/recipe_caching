@@ -55,7 +55,7 @@ class CachingQuery(Query):
            in the cache are not the same ones in the current Session.
         """
         if hasattr(self, '_cache_region'):
-            return self.get_value(createfunc=self._log_and_query)
+            return self.get_value(createfunc=list(self._log_and_query))
         else:
             return self._log_and_query(self)
 
