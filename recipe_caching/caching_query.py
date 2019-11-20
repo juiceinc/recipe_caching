@@ -71,8 +71,7 @@ class CachingQuery(Query):
             key = self._cache_region.cache_key
         else:
             key = _key_from_query(self)
-        if getattr(self._cache_region, 'cache_prefix'):
-            key = '{}:{}'.format(self._cache_region.cache_prefix, key)
+        key = '{}:{}'.format(self._cache_region.cache_prefix, key)
         return dogpile_region, key
 
     def invalidate(self):
