@@ -5,3 +5,4 @@ sqlalchemy
 redis
 dogpile.cache
 flapjack-stack
+structlog
