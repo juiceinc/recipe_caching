@@ -3,6 +3,7 @@
 Recipe
 ~~~~~~~~~~~~~~~~~~~~~
 """
+import functools
 import logging
 
 from recipe_caching.caching_query import CachingQuery
@@ -21,11 +22,7 @@ logging.getLogger(__name__).addHandler(NullHandler())
 
 
 def query_callable(regions, query_cls=CachingQuery):
-
-    def query(*arg, **kw):
-        return query_cls(regions, *arg, **kw)
-
-    return query
+    return functools.partial(query_cls, regions)
 
 
 __all__ = [query_callable]
