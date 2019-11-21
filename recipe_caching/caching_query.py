@@ -62,7 +62,7 @@ class CachingQuery(Query):
             return self._log_and_query(self)
 
     def _log_and_query(self):
-        SLOG.debug('executing-query', sql=prettyprintable_sql(self))
+        SLOG.debug('execute-query', sql=prettyprintable_sql(self))
         return Query.__iter__(self)
 
     def _get_cache_plus_key(self):
