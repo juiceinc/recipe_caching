@@ -8,16 +8,14 @@ Dogpile caching with SQLAlchemy.
 
 The rest of what's here are standard SQLAlchemy and dogpile.cache constructs.
 """
-import logging
-
 from dogpile.cache.api import NO_VALUE
-from redis.exceptions import ConnectionError, LockError as RedisLockError
 from dogpile.util.readwrite_lock import LockError as DogpileLockError
+from recipe.utils import clean_unicode, prettyprintable_sql
+from redis.exceptions import ConnectionError, LockError as RedisLockError
 from sqlalchemy.orm.query import Query
+import structlog
 
-from recipe.utils import clean_unicode
-
-logger = logging.getLogger(__name__)
+SLOG = structlog.get_logger(__name__)
 
 
 class CachingQuery(Query):
@@ -36,7 +34,6 @@ class CachingQuery(Query):
 
     The FromCache and RelationshipCache mapper options below represent
     the "public" method of configuring this state upon the CachingQuery.
-
     """
 
     def __init__(self, regions, *args, **kw):
@@ -59,10 +56,14 @@ class CachingQuery(Query):
         """
         if hasattr(self, '_cache_region'):
             return self.get_value(
-                createfunc=lambda: list(Query.__iter__(self))
+                createfunc=lambda: list(self._log_and_query())
             )
         else:
-            return Query.__iter__(self)
+            return self._log_and_query(self)
+
+    def _log_and_query(self):
+        SLOG.debug('execute-query', sql=prettyprintable_sql(self))
+        return Query.__iter__(self)
 
     def _get_cache_plus_key(self):
         """Return a cache region plus key."""
@@ -118,10 +119,10 @@ class CachingQuery(Query):
                     cache_key, create_wrapper, expiration_time=expiration_time
                 )
             except ConnectionError:
-                logger.error('Cannot connect to query caching backend!')
+                SLOG.error('Cannot connect to query caching backend!')
                 cached_value = create_wrapper()
             except (RedisLockError, DogpileLockError) as exc_info:
-                logger.warn('Lock is not longer available: {}'.format(exc_info))
+                SLOG.warn('Lock is not longer available', exc_info=exc_info)
                 cached_value = create_wrapper()
         if cached_value is NO_VALUE:
             raise KeyError(cache_key)
@@ -136,7 +137,7 @@ class CachingQuery(Query):
         try:
             dogpile_region.set(cache_key, value)
         except ConnectionError:
-            logger.error('Cannot connect to query caching backend!')
+            SLOG.error('Cannot connect to query caching backend!')
 
 
 def _key_from_query(query, qualifier=None):

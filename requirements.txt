@@ -10,7 +10,6 @@ decorator==4.4.0          # via dogpile.cache
 dogpile.cache==0.7.1
 et-xmlfile==1.0.1         # via openpyxl
 faker==1.0.7              # via recipe
-ipaddress==1.0.22         # via faker
 jdcal==1.3                # via openpyxl
 odfpy==1.3.5              # via tablib
 openpyxl==2.4.9           # via tablib
@@ -26,6 +25,7 @@ six==1.11.0
 sqlalchemy==1.3.4
 sqlparse==0.2.4           # via recipe
 stevedore==1.30.1         # via recipe
+structlog==19.2.0
 sureberus==0.7.0          # via recipe
 tablib==0.12.1            # via recipe
 text-unidecode==1.2       # via faker
