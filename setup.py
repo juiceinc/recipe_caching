@@ -32,7 +32,6 @@ install = [
     'sqlalchemy',
     'redis',
     'dogpile.cache',
-    'flapjack-stack'
 ]
 # yapf: enable
 
