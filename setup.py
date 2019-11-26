@@ -32,6 +32,7 @@ install = [
     'sqlalchemy',
     'redis',
     'dogpile.cache',
+    'structlog',
 ]
 # yapf: enable
 
