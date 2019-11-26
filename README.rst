@@ -26,7 +26,7 @@ Overview
 Recipe_Caching is an MIT licensed caching extension for the recipe querying
 library, written in Python. It caches SQL query results keyed by the SQL query.
 By providing a custom oven and a recipe extension. Using it requires defining
-a `dogpile.cache`_ cache region, using the caching oven, and telling the recipe
+a ``dogpile.cache`` cache region, using the caching oven, and telling the recipe
 to use the caching extension.
 
 Installation
