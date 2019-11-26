@@ -67,7 +67,7 @@ class TestRecipeIngredients(object):
         assert recipe.to_sql() == """SELECT foo.first AS first,
        sum(foo.age) AS age
 FROM foo
-GROUP BY foo.first"""
+GROUP BY first"""
         assert recipe.all()[0].first == 'hi'
         assert recipe.all()[0].age == 15
         assert recipe.stats.rows == 1
@@ -82,13 +82,39 @@ GROUP BY foo.first"""
         cache = ('hi', 15)
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
+    def test_fetched_from_cache(self):
+        # Add a cache busting random value
+        recipe = self.recipe().metrics('age').dimensions('first').filters(MyTable.age>-10)
+        assert recipe.to_sql() == """SELECT foo.first AS first,
+       sum(foo.age) AS age
+FROM foo
+WHERE foo.age > -10
+GROUP BY first"""
+        recipe.all()
+        assert recipe.stats.from_cache == False
+        assert recipe.all()[0].first == 'hi'
+        assert recipe.all()[0].age == 15
+        assert recipe.stats.rows == 1
+
+        recipe = self.recipe().metrics('age').dimensions('first').filters(MyTable.age>-10)
+        assert recipe.to_sql() == """SELECT foo.first AS first,
+       sum(foo.age) AS age
+FROM foo
+WHERE foo.age > -10
+GROUP BY first"""
+        recipe.all()
+        assert recipe.stats.from_cache == True
+        assert recipe.all()[0].first == 'hi'
+        assert recipe.all()[0].age == 15
+        assert recipe.stats.rows == 1
+
     def test_dimension2(self):
         recipe = self.recipe().metrics('age').dimensions('last')\
             .order_by('last')
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
-GROUP BY foo.last
+GROUP BY last
 ORDER BY foo.last"""
         assert recipe.all()[0].last == 'fred'
         assert recipe.all()[0].age == 10
@@ -112,7 +138,7 @@ ORDER BY foo.last"""
         assert recipe.to_sql() == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
-GROUP BY foo.last
+GROUP BY last
 ORDER BY foo.last"""
         assert recipe.all()[0].last == 'fred'
         assert recipe.all()[0].age == 10
