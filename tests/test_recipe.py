@@ -7,48 +7,44 @@ from recipe.oven import get_oven
 
 IN_MEMORY_CACHE = {}
 SETTINGS.CACHE_REGIONS = {
-    'default':
-        make_region().configure(
-            'dogpile.cache.memory', arguments={
-                'cache_dict': IN_MEMORY_CACHE
-            }
-        )
+    "default": make_region().configure(
+        "dogpile.cache.memory", arguments={"cache_dict": IN_MEMORY_CACHE}
+    )
 }
 
 Base = declarative_base()
-oven = get_oven('sqlite://', name='caching')
+oven = get_oven("sqlite://", name="caching")
 
-TABLEDEF = '''
+TABLEDEF = """
         CREATE TABLE IF NOT EXISTS foo
         (first text,
          last text,
          age int);
-'''
+"""
 
 oven.engine.execute(TABLEDEF)
-oven.engine.execute(
-    "insert into foo values ('hi', 'there', 5), ('hi', 'fred', 10)"
-)
+oven.engine.execute("insert into foo values ('hi', 'there', 5), ('hi', 'fred', 10)")
 
 
 class MyTable(Base):
-    first = Column('first', String(), primary_key=True)
-    last = Column('last', String())
-    age = Column('age', Integer())
+    first = Column("first", String(), primary_key=True)
+    last = Column("last", String())
+    age = Column("age", Integer())
 
-    __tablename__ = 'foo'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "foo"
+    __table_args__ = {"extend_existing": True}
 
 
-mytable_shelf = Shelf({
-    'first': Dimension(MyTable.first),
-    'last': Dimension(MyTable.last),
-    'age': Metric(func.sum(MyTable.age))
-})
+mytable_shelf = Shelf(
+    {
+        "first": Dimension(MyTable.first),
+        "last": Dimension(MyTable.last),
+        "age": Metric(func.sum(MyTable.age)),
+    }
+)
 
 
 class TestRecipeIngredients(object):
-
     def setup(self):
         # create a Session
         self.session = oven.Session()
@@ -58,17 +54,20 @@ class TestRecipeIngredients(object):
         return Recipe(
             shelf=self.shelf,
             session=self.session,
-            dynamic_extensions=['caching'],
+            dynamic_extensions=["caching"],
             **kwargs
         )
 
     def test_dimension(self):
-        recipe = self.recipe().metrics('age').dimensions('first')
-        assert recipe.to_sql() == """SELECT foo.first AS first,
+        recipe = self.recipe().metrics("age").dimensions("first")
+        assert (
+            recipe.to_sql()
+            == """SELECT foo.first AS first,
        sum(foo.age) AS age
 FROM foo
 GROUP BY first"""
-        assert recipe.all()[0].first == 'hi'
+        )
+        assert recipe.all()[0].first == "hi"
         assert recipe.all()[0].age == 15
         assert recipe.stats.rows == 1
 
@@ -79,44 +78,56 @@ GROUP BY first"""
                 cached = True
                 cached_key = key
         assert cached
-        cache = ('hi', 15)
+        cache = ("hi", 15)
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
     def test_fetched_from_cache(self):
         # Add a cache busting random value
-        recipe = self.recipe().metrics('age').dimensions('first').filters(MyTable.age>-10)
-        assert recipe.to_sql() == """SELECT foo.first AS first,
+        recipe = (
+            self.recipe().metrics("age").dimensions("first").filters(MyTable.age > -10)
+        )
+        assert (
+            recipe.to_sql()
+            == """SELECT foo.first AS first,
        sum(foo.age) AS age
 FROM foo
 WHERE foo.age > -10
 GROUP BY first"""
+        )
         recipe.all()
         assert recipe.stats.from_cache == False
-        assert recipe.all()[0].first == 'hi'
+        assert recipe.all()[0].first == "hi"
         assert recipe.all()[0].age == 15
         assert recipe.stats.rows == 1
 
-        recipe = self.recipe().metrics('age').dimensions('first').filters(MyTable.age>-10)
-        assert recipe.to_sql() == """SELECT foo.first AS first,
+        recipe = (
+            self.recipe().metrics("age").dimensions("first").filters(MyTable.age > -10)
+        )
+        assert (
+            recipe.to_sql()
+            == """SELECT foo.first AS first,
        sum(foo.age) AS age
 FROM foo
 WHERE foo.age > -10
 GROUP BY first"""
+        )
         recipe.all()
         assert recipe.stats.from_cache == True
-        assert recipe.all()[0].first == 'hi'
+        assert recipe.all()[0].first == "hi"
         assert recipe.all()[0].age == 15
         assert recipe.stats.rows == 1
 
     def test_dimension2(self):
-        recipe = self.recipe().metrics('age').dimensions('last')\
-            .order_by('last')
-        assert recipe.to_sql() == """SELECT foo.last AS last,
+        recipe = self.recipe().metrics("age").dimensions("last").order_by("last")
+        assert (
+            recipe.to_sql()
+            == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
 GROUP BY last
 ORDER BY foo.last"""
-        assert recipe.all()[0].last == 'fred'
+        )
+        assert recipe.all()[0].last == "fred"
         assert recipe.all()[0].age == 10
         assert recipe.stats.rows == 2
 
@@ -127,20 +138,21 @@ ORDER BY foo.last"""
                 cached = True
                 cached_key = key
         assert cached
-        cache = ('fred', 10)
+        cache = ("fred", 10)
         print(IN_MEMORY_CACHE[cached_key][0][0])
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
 
     def test_recipe_init(self):
-        recipe = self.recipe(
-            metrics=('age',), dimensions=('last',)
-        ).order_by('last')
-        assert recipe.to_sql() == """SELECT foo.last AS last,
+        recipe = self.recipe(metrics=("age",), dimensions=("last",)).order_by("last")
+        assert (
+            recipe.to_sql()
+            == """SELECT foo.last AS last,
        sum(foo.age) AS age
 FROM foo
 GROUP BY last
 ORDER BY foo.last"""
-        assert recipe.all()[0].last == 'fred'
+        )
+        assert recipe.all()[0].last == "fred"
         assert recipe.all()[0].age == 10
         assert recipe.stats.rows == 2
 
@@ -151,5 +163,5 @@ ORDER BY foo.last"""
                 cached = True
                 cached_key = key
         assert cached
-        cache = ('fred', 10)
+        cache = ("fred", 10)
         assert cache == IN_MEMORY_CACHE[cached_key][0][0]
