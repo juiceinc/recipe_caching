@@ -4,10 +4,6 @@ Overview
 
 .. start-badges
 
-.. list-table::
-    :stub-columns: 1
-
-
 .. |downloads| image:: https://img.shields.io/pypi/dm/recipe.svg
     :alt: PyPI Package monthly downloads
     :target: https://pypi.python.org/pypi/recipe

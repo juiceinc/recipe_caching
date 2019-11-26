@@ -39,7 +39,7 @@ install = [
 setup(
     name="recipe_caching",
     version="0.5.0",
-    description="caching for recipes",
+    description="caching for recipe library",
     long_description=(open("README.rst").read()),
     author="Chris Gemignani",
     author_email="chris.gemignani@juiceanalytics.com",
