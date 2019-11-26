@@ -11,3 +11,4 @@ exclude =
     dist,
     __init__.py
 max-complexity = 12
+max-line-length = 88
