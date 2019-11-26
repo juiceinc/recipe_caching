@@ -3,5 +3,4 @@ six
 recipe>=0.7.2
 sqlalchemy
 redis
-dogpile.cache
 structlog
