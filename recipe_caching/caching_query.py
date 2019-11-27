@@ -59,7 +59,7 @@ class CachingQuery(Query):
                 createfunc=lambda: list(self._log_and_query())
             )
         else:
-            return self._log_and_query(self)
+            return self._log_and_query()
 
     def _log_and_query(self):
         SLOG.debug('execute-query', sql=prettyprintable_sql(self))
