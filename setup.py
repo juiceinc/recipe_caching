@@ -38,7 +38,7 @@ install = [
 
 setup(
     name="recipe_caching",
-    version="0.5.0",
+    version="0.5.1",
     description="caching for recipe library",
     long_description=(open("README.rst").read()),
     author="Chris Gemignani",
