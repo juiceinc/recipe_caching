@@ -54,15 +54,13 @@ class CachingQuery(Query):
            session before returning the list of items, so that the items
            in the cache are not the same ones in the current Session.
         """
-        if hasattr(self, '_cache_region'):
-            return self.get_value(
-                createfunc=lambda: list(self._log_and_query())
-            )
+        if hasattr(self, "_cache_region"):
+            return self.get_value(createfunc=lambda: list(self._log_and_query()))
         else:
-            return self._log_and_query(self)
+            return self._log_and_query()
 
     def _log_and_query(self):
-        SLOG.debug('execute-query', sql=prettyprintable_sql(self))
+        SLOG.debug("execute-query", sql=prettyprintable_sql(self))
         return Query.__iter__(self)
 
     def _get_cache_plus_key(self):
@@ -72,7 +70,7 @@ class CachingQuery(Query):
             key = self._cache_region.cache_key
         else:
             key = _key_from_query(self)
-        key = '{}:{}'.format(self._cache_region.cache_prefix, key)
+        key = "{}:{}".format(self._cache_region.cache_prefix, key)
         return dogpile_region, key
 
     def invalidate(self):
@@ -81,11 +79,7 @@ class CachingQuery(Query):
         dogpile_region.delete(cache_key)
 
     def get_value(
-        self,
-        merge=True,
-        createfunc=None,
-        expiration_time=None,
-        ignore_expiration=False
+        self, merge=True, createfunc=None, expiration_time=None, ignore_expiration=False
     ):
         """Return the value from the cache for this query.
 
@@ -98,17 +92,19 @@ class CachingQuery(Query):
         # but is expired, return it anyway.   This doesn't make sense
         # with createfunc, which says, if the value is expired, generate
         # a new value.
-        assert not ignore_expiration or not createfunc, \
-            "Can't ignore expiration and also provide createfunc"
+        assert (
+            not ignore_expiration or not createfunc
+        ), "Can't ignore expiration and also provide createfunc"
 
         ran_createfunc = []
         if ignore_expiration or not createfunc:
             cached_value = dogpile_region.get(
                 cache_key,
                 expiration_time=expiration_time,
-                ignore_expiration=ignore_expiration
+                ignore_expiration=ignore_expiration,
             )
         else:
+
             def create_wrapper():
                 # When we switch all the way to Python 3, this should use `nonlocal`
                 ran_createfunc.append(True)
@@ -119,10 +115,10 @@ class CachingQuery(Query):
                     cache_key, create_wrapper, expiration_time=expiration_time
                 )
             except ConnectionError:
-                SLOG.error('Cannot connect to query caching backend!')
+                SLOG.error("Cannot connect to query caching backend!")
                 cached_value = create_wrapper()
             except (RedisLockError, DogpileLockError) as exc_info:
-                SLOG.warn('Lock is not longer available', exc_info=exc_info)
+                SLOG.warn("Lock is not longer available", exc_info=exc_info)
                 cached_value = create_wrapper()
         if cached_value is NO_VALUE:
             raise KeyError(cache_key)
@@ -137,7 +133,7 @@ class CachingQuery(Query):
         try:
             dogpile_region.set(cache_key, value)
         except ConnectionError:
-            SLOG.error('Cannot connect to query caching backend!')
+            SLOG.error("Cannot connect to query caching backend!")
 
 
 def _key_from_query(query, qualifier=None):
@@ -157,5 +153,7 @@ def _key_from_query(query, qualifier=None):
 
     # here we return the key as a long string.  our "key mangler"
     # set up with the region will boil it down to an md5.
-    return ' '.join([clean_unicode(compiled).decode('utf-8')] +
-                    [clean_unicode(params[k]).decode('utf-8') for k in sorted(params)])
+    return " ".join(
+        [clean_unicode(compiled).decode("utf-8")]
+        + [clean_unicode(params[k]).decode("utf-8") for k in sorted(params)]
+    )
