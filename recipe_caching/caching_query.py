@@ -39,7 +39,7 @@ class CachingQuery(Query):
     def __init__(self, regions, *args, **kw):
         self.cache_regions = regions
         self.fetched_from_cache = False
-        self.format_log_sql = kw.pop('format_log_sql', False)
+        self.format_log_sql = kw.pop("format_log_sql", False)
         Query.__init__(self, *args, **kw)
 
     def __iter__(self):
@@ -61,7 +61,9 @@ class CachingQuery(Query):
             return self._log_and_query()
 
     def _log_and_query(self):
-        SLOG.info("execute-query", sql=prettyprintable_sql(self, reindent=self.format_log_sql))
+        SLOG.info(
+            "execute-query", sql=prettyprintable_sql(self, reindent=self.format_log_sql)
+        )
         return Query.__iter__(self)
 
     def _get_cache_plus_key(self):
