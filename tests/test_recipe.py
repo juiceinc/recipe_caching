@@ -125,7 +125,7 @@ GROUP BY first"""
        sum(foo.age) AS age
 FROM foo
 GROUP BY last
-ORDER BY foo.last"""
+ORDER BY last"""
         )
         assert recipe.all()[0].last == "fred"
         assert recipe.all()[0].age == 10
