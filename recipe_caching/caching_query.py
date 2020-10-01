@@ -14,6 +14,7 @@ from recipe.utils import clean_unicode, prettyprintable_sql
 from redis.exceptions import ConnectionError, LockError as RedisLockError
 from sqlalchemy.orm.query import Query
 import structlog
+import time
 
 SLOG = structlog.get_logger(__name__)
 
@@ -74,6 +75,9 @@ class CachingQuery(Query):
         else:
             key = _key_from_query(self)
         key = "{}:{}".format(self._cache_region.cache_prefix, key)
+        SLOG.info(
+            "cache-key", cache=dogpile_region, key=key
+        )
         return dogpile_region, key
 
     def invalidate(self):
@@ -89,6 +93,7 @@ class CachingQuery(Query):
         Raise KeyError if no value present and no
         createfunc specified.
         """
+        startime = time.time()
         dogpile_region, cache_key = self._get_cache_plus_key()
 
         # ignore_expiration means, if the value is in the cache
@@ -128,6 +133,11 @@ class CachingQuery(Query):
         if merge:
             cached_value = self.merge_result(cached_value, load=False)
         self.fetched_from_cache = not ran_createfunc
+
+        SLOG.info(
+            "Got value", fetched_from_cache=self.fetched_from_cache, total_time=time.time() - starttime
+        )
+
         return cached_value
 
     def set_value(self, value):
