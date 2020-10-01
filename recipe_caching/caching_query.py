@@ -58,12 +58,12 @@ class CachingQuery(Query):
         """
         if hasattr(self, "_cache_region"):
             return self.get_value(createfunc=lambda: list(self._log_and_query()))
-        else:
+        else:            
             return self._log_and_query()
 
     def _log_and_query(self):
         SLOG.info(
-            "execute-query", sql=prettyprintable_sql(self, reindent=self.format_log_sql)
+            "execute-query", sql=prettyprintable_sql(self, reindent=self.format_log_sql), cache_region=getattr(self, "_cache_region", "None")
         )
         return Query.__iter__(self)
 
