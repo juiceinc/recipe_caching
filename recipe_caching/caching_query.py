@@ -93,7 +93,7 @@ class CachingQuery(Query):
         Raise KeyError if no value present and no
         createfunc specified.
         """
-        startime = time.time()
+        starttime = time.time()
         dogpile_region, cache_key = self._get_cache_plus_key()
 
         # ignore_expiration means, if the value is in the cache
